@@ -40,4 +40,4 @@
              (list (service xorg-service-type)
                    (service exwm-service-type)
                    (service network-management-service-type))
-             %base-services))
+             %base-services)))
