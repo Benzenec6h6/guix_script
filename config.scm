@@ -23,11 +23,6 @@
           (mount-point "/")
           (type "ext4"))))
 
-  ;; ネットワーク
-  (services (append
-             (list (service network-management-service-type))
-             %base-services))
-
   ;; ユーザーアカウント
   (users (list (user-account
                 (name "yourusername")
@@ -37,11 +32,12 @@
                 (password-hash "……ここに生成したハッシュ"))))
 
   ;; パッケージ
-  (packages (append (list guix guile emacs)
+  (packages (append (list guix guile emacs emacs-exwm git)
                     %base-packages))
 
-  ;; GUI (Xorg + EXWM)
+  ;; GUI,ネットワーク (Xorg + EXWM)
   (services (append
              (list (service xorg-service-type)
-                   (service exwm-service-type))
-             %base-services)))
+                   (service exwm-service-type)
+                   (service network-management-service-type))
+             %base-services))
