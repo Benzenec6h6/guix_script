@@ -40,7 +40,7 @@ mkdir -p "$MOUNTPOINT/etc"
 cp ./config.scm "$MOUNTPOINT/etc/config.scm"
 
 # --- インストール実行 ---
-guix system install /mnt/etc/config.scm --target="$DISK"
+guix system init /mnt/etc/config.scm /mnt
 
 # --- アンマウント（任意） ---
 umount "$MOUNTPOINT/boot/efi"
