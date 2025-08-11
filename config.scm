@@ -8,9 +8,9 @@
 
   ;; ブートローダー（UEFI対応）
   (bootloader
-   (grub-configuration
-    (target "/boot/efi")
-    (device "/dev/sda")))
+   (grub-bootloader
+    (efi-boot-directory "/boot/efi")
+    (device #f)))
 
   ;; ファイルシステム設定
   (file-systems
@@ -28,7 +28,7 @@
                 (name "yourusername")
                 (group "users")
                 (home-directory "/home/yourusername")
-                (shell (file-append (user-profile) "/bin/bash"))
+                (shell "/bin/bash")
                 (password-hash "……ここに生成したハッシュ"))))
 
   ;; パッケージ
