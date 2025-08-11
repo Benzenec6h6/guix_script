@@ -27,13 +27,13 @@ sgdisk -n 1:0:+512MiB -t 1:ef00 "$DISK"
 sgdisk -n 2:0:0 -t 2:8300 "$DISK"
 
 # --- フォーマット ---
-mkfs.fat -F32 "$EFI_PART"
-mkfs.ext4 "$ROOT_PART"
+mkfs.fat -F32 ${DISK}1
+mkfs.ext4 -F ${DISK}2
 
 # --- マウント ---
-mount "$ROOT_PART" "$MOUNTPOINT"
+mount ${DISK}2 "$MOUNTPOINT"
 mkdir -p "$MOUNTPOINT/boot/efi"
-mount "$EFI_PART" "$MOUNTPOINT/boot/efi"
+mount ${DISK}1 "$MOUNTPOINT/boot/efi"
 
 # --- config.scmを/mnt/etc/config.scmにコピー（別途準備済みとする） ---
 mkdir -p "$MOUNTPOINT/etc"
