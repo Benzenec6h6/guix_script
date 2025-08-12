@@ -52,7 +52,7 @@
   (services
     (append
       (list
-        (service xorg-service-type
+        (service xorg-server-service-type
                  (xorg-configuration
                    (keyboard-layout (keyboard-layout "jp" "jp106"))))
         (service network-manager-service-type))
