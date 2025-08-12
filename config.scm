@@ -1,7 +1,7 @@
 (use-modules (gnu)
              (gnu system)
              (gnu services desktop)
-             (gnu services xorg-server)
+             (gnu services xorg)
              (gnu services networking)
              (gnu packages bash)
              (gnu packages guile)
