@@ -6,6 +6,7 @@
              (gnu packages bash)
              (gnu packages guile)
              (gnu packages emacs)
+             (gnu packages emacs-xyz)
              (gnu packages package-management)
              (gnu packages version-control))
 
