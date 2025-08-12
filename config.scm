@@ -15,7 +15,7 @@
   ;; ブートローダー（UEFI対応）
   (bootloader-configuration
     (bootloader grub-efi-bootloader)
-    (target "/boot/efi"))
+    (targets "/boot/efi"))
 
   ;; ファイルシステム設定
   (file-systems
