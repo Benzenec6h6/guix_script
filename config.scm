@@ -1,5 +1,6 @@
 (use-modules (gnu)
              (gnu system)
+             (gnu accounts)
              (gnu services xorg)
              (gnu services networking)
              (gnu packages bash)
