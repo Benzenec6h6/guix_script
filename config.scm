@@ -17,9 +17,10 @@
   (keyboard-layout (keyboard-layout "jp" "jp106"))
 
   ;; ブートローダー（UEFI対応）
+  (bootloader
   (bootloader-configuration
     (bootloader grub-efi-bootloader)
-    (targets '("/boot/efi")))
+    (target "/boot/efi")))
 
   ;; ファイルシステム設定
   (file-systems
