@@ -15,8 +15,7 @@
   ;; ブートローダー（UEFI対応）
   (bootloader
     (bootloader grub-efi-bootloader)
-    (target "/boot/efi")
-    (keyboard-layout keyboard-layout))
+    (target "/boot/efi"))
 
   ;; ファイルシステム設定
   (file-systems
