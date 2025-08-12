@@ -6,7 +6,8 @@
              (gnu packages bash)
              (gnu packages guile)
              (gnu packages emacs)
-             (gnu packages package-management))
+             (gnu packages package-management)
+             (gnu packages version-control))
 
 (operating-system
   (host-name "guix-box")
@@ -18,43 +19,41 @@
 
   ;; ブートローダー（UEFI対応）
   (bootloader
-  (bootloader-configuration
-    (bootloader grub-efi-bootloader)
-    (target "/boot/efi")))
+    (bootloader-configuration
+      (bootloader grub-efi-bootloader)
+      (targets '("/boot/efi"))))
 
   ;; ファイルシステム設定
   (file-systems
-   (list (file-system
-          (device "/dev/sda1")
-          (mount-point "/boot/efi")
-          (type "vfat"))
-         (file-system
-          (device "/dev/sda2")
-          (mount-point "/")
-          (type "ext4"))))
+    (list (file-system
+            (device "/dev/sda1")
+            (mount-point "/boot/efi")
+            (type "vfat"))
+          (file-system
+            (device "/dev/sda2")
+            (mount-point "/")
+            (type "ext4"))))
 
   ;; ユーザーアカウント
   (users
-   (list (user-account
-          (name "yourusername")
-          (group "users")
-          (supplementary-groups '("wheel" "audio" "video" "network"))
-          (home-directory "/home/yourusername")
-          (shell (file-append bash "/bin/bash")))))
+    (list (user-account
+            (name "yourusername")
+            (group "users")
+            (supplementary-groups '("wheel" "audio" "video" "network"))
+            (home-directory "/home/yourusername")
+            (shell (file-append bash "/bin/bash")))))
 
   ;; パッケージ
   (packages
-   (append (list guile emacs emacs-exwm git)
-           %base-packages))
+    (append (list guile-3.0 emacs emacs-exwm git)
+            %base-packages))
 
   ;; サービス
   (services
-   (append
-    (list
-     ;; Xorg
-     (service xorg-service-type
-              (xorg-configuration
-               (keyboard-layout (keyboard-layout "jp" "jp106"))))
-     ;; Network
-     (service network-manager-service-type))
-    %base-services)))
+    (append
+      (list
+        (service xorg-service-type
+                 (xorg-configuration
+                   (keyboard-layout (keyboard-layout "jp" "jp106"))))
+        (service network-manager-service-type))
+      %base-services)))
