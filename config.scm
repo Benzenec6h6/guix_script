@@ -13,7 +13,7 @@
   (keyboard-layout (keyboard-layout "jp" "jp106"))
 
   ;; ブートローダー（UEFI対応）
-  (bootloader
+  (bootloader-configuration
     (bootloader grub-efi-bootloader)
     (target "/boot/efi"))
 
