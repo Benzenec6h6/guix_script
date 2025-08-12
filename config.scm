@@ -1,8 +1,12 @@
 (use-modules (gnu)
              (gnu system)
              (gnu services desktop)
+             (gnu services xorg)
+             (gnu services networking)
+             (gnu packages bash)
              (gnu packages guile)
-             (gnu packages emacs))
+             (gnu packages emacs)
+             (gnu packages package-management))
 
 (operating-system
   (host-name "guix-box")
@@ -39,16 +43,17 @@
 
   ;; パッケージ
   (packages
-   (append (list guix guile emacs emacs-exwm git)
+   (append (list guile emacs emacs-exwm git)
            %base-packages))
 
-  ;; GUI, ネットワーク (Xorg + EXWM)
+  ;; サービス
   (services
    (append
     (list
+     ;; Xorg
      (service xorg-service-type
               (xorg-configuration
-               (keyboard-layout keyboard-layout)))
-     (service exwm-service-type)
+               (keyboard-layout (keyboard-layout "jp" "jp106"))))
+     ;; Network
      (service network-manager-service-type))
     %base-services)))
