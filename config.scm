@@ -27,11 +27,11 @@
   ;; ファイルシステム設定
   (file-systems
     (list (file-system
-            (device "/dev/sda1")
+            (device "/dev/vda1")
             (mount-point "/boot/efi")
             (type "vfat"))
           (file-system
-            (device "/dev/sda2")
+            (device "/dev/vda2")
             (mount-point "/")
             (type "ext4"))))
 
