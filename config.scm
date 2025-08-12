@@ -34,6 +34,13 @@
             (mount-point "/")
             (type "ext4"))))
 
+  ;; groups
+  (groups (list (group-account (name "network"))
+              (group-account (name "wheel"))
+              (group-account (name "audio"))
+              (group-account (name "video"))
+              (group-account (name "users"))))          
+
   ;; ユーザーアカウント
   (users
     (list (user-account
