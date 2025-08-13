@@ -53,7 +53,7 @@
          %base-user-accounts))
 
  ;; パッケージ
- (packages (append (list guile-3.0 emacs emacs-exwm git)
+ (packages (append (list guile-3.0 emacs emacs-exwm git wpa-supplicant)
                    %base-packages))
 
  ;; サービス
@@ -62,7 +62,8 @@
              ;; Xorg
              (service xorg-server-service-type)
              ;; Network
-             (service network-manager-service-type)
-             ;; WPA supplicant は自動で base に含まれる
-             )
+             ;(service wpa-supplicant-service-type)
+             ;(service network-manager-service-type)
+             ;; 有線のみ
+             (service dhcp-client-service-type))
             %base-services)))
