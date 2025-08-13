@@ -39,6 +39,7 @@
  ;; グループ設定（base のものを残す + 自分の追加）
  (groups (append
           (list (user-group (name "teto"))) ;; 自作ユーザー用グループ
+          (list (user-group (name "network")))
           %base-groups))
 
  ;; ユーザー設定（base の root や nobody を残す）
