@@ -1,8 +1,7 @@
 (use-modules (gnu)
              (gnu system)
-             (gnu system shadow)
-             (gnu services networking)
              (gnu services xorg)
+             (gnu services networking)
              (gnu packages bash)
              (gnu packages guile)
              (gnu packages emacs)
@@ -36,13 +35,8 @@
           (mount-point "/")
           (type "ext4"))))
 
-  ;; グループ定義
-  (groups (list (group-account (name "root"))
-                (group-account (name "wheel"))
-                (group-account (name "audio"))
-                (group-account (name "video"))
-                (group-account (name "network"))
-                (group-account (name "users"))))
+  ;; グループ設定（文字列リスト）
+  (groups '("root" "wheel" "audio" "video" "network" "users"))
 
   ;; ユーザーアカウント
   (users (list (user-account
