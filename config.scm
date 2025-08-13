@@ -37,12 +37,12 @@
           (type "ext4"))))
 
   ;; グループ定義
-  (groups (list (group (name "root"))
-                (group (name "wheel"))
-                (group (name "audio"))
-                (group (name "video"))
-                (group (name "network"))
-                (group (name "users"))))
+  (groups (list (group-account (name "root"))
+                (group-account (name "wheel"))
+                (group-account (name "audio"))
+                (group-account (name "video"))
+                (group-account (name "network"))
+                (group-account (name "users"))))
 
   ;; ユーザーアカウント
   (users (list (user-account
