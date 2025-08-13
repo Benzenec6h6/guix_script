@@ -38,6 +38,7 @@
 
   ;; グループ定義（user-group 形式）
   (groups (list (user-group (name "root") (id 0))
+                (user-group (name "nogroup"))
                 (user-group (name "wheel"))
                 (user-group (name "audio"))
                 (user-group (name "video"))
