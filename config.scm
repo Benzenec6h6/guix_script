@@ -1,6 +1,5 @@
 (use-modules (gnu)
              (gnu system)
-             (gnu accounts)
              (gnu services xorg)
              (gnu services networking)
              (gnu packages bash)
@@ -33,14 +32,7 @@
           (file-system
             (device "/dev/vda2")
             (mount-point "/")
-            (type "ext4"))))
-
-  ;; groups
-  (groups (list (group-account (name "network"))
-              (group-account (name "wheel"))
-              (group-account (name "audio"))
-              (group-account (name "video"))
-              (group-account (name "users"))))          
+            (type "ext4"))))          
 
   ;; ユーザーアカウント
   (users
@@ -50,6 +42,9 @@
             (supplementary-groups '("wheel" "audio" "video" "network"))
             (home-directory "/home/yourusername")
             (shell (file-append bash "/bin/bash")))))
+
+  ;; グループ設定
+  (groups '("wheel" "audio" "video" "network" "users"))
 
   ;; パッケージ
   (packages
