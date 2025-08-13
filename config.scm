@@ -1,5 +1,6 @@
 (use-modules (gnu)
              (gnu system)
+             (gnu system shadow)
              (gnu services xorg)
              (gnu services networking)
              (gnu packages bash)
@@ -34,6 +35,14 @@
             (mount-point "/")
             (type "ext4"))))          
 
+ ;; グループ定義（root, wheel, network など必須）
+  (groups (list (group (name "root"))
+                (group (name "wheel"))
+                (group (name "network"))
+                (group (name "audio"))
+                (group (name "video"))
+                (group (name "users"))))
+
   ;; ユーザーアカウント
   (users
     (list (user-account
@@ -42,9 +51,6 @@
             (supplementary-groups '("wheel" "audio" "video" "network"))
             (home-directory "/home/yourusername")
             (shell (file-append bash "/bin/bash")))))
-
-  ;; グループ設定
-  (groups '("wheel" "audio" "video" "network" "users"))
 
   ;; パッケージ
   (packages
