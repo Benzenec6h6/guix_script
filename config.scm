@@ -1,6 +1,6 @@
 (use-modules (gnu)
              (gnu system)
-             (gnu system shadow)   ; user-group と user-account 用
+             (gnu system shadow)
              (gnu services networking)
              (gnu services xorg)
              (gnu packages bash)
@@ -11,41 +11,37 @@
              (gnu packages version-control))
 
 (operating-system
-  ;; ホスト名・タイムゾーン・ロケール
   (host-name "guix-box")
   (timezone "Asia/Tokyo")
   (locale "ja_JP.UTF-8")
-
-  ;; キーボード設定
   (keyboard-layout (keyboard-layout "jp" "jp106"))
 
-  ;; ブートローダー（UEFI対応）
   (bootloader
     (bootloader-configuration
       (bootloader grub-efi-bootloader)
       (targets '("/boot/efi"))))
 
-  ;; ファイルシステム設定（install.sh が置換）
   (file-systems
-   (list (file-system
-           (device "DEVICE_EFI")   ;; install.sh が置換
-           (mount-point "/boot/efi")
-           (type "vfat"))
-         (file-system
-           (device "DEVICE_ROOT")  ;; install.sh が置換
-           (mount-point "/")
-           (type "ext4"))))
+    (list (file-system
+            (device "DEVICE_EFI")
+            (mount-point "/boot/efi")
+            (type "vfat"))
+          (file-system
+            (device "DEVICE_ROOT")
+            (mount-point "/")
+            (type "ext4"))))
 
-  ;; グループ定義（user-group 形式）
-  (groups (list (user-group (name "root") (id 0))
-                (user-group (name "nogroup"))
-                (user-group (name "wheel"))
-                (user-group (name "audio"))
-                (user-group (name "video"))
-                (user-group (name "network"))
-                (user-group (name "users"))))
+  ;; %base-groups に追加する形でグループ定義
+  (groups (append
+            (list (user-group (name "root") (id 0))
+                  (user-group (name "wheel"))
+                  (user-group (name "audio"))
+                  (user-group (name "video"))
+                  (user-group (name "network"))
+                  (user-group (name "users")))
+            %base-groups)) ; ここで nogroup や netdev など標準グループを保持
 
-  ;; ユーザー定義（root は %base-user-accounts に含まれるので不要）
+  ;; %base-user-accounts に追加する形でユーザー定義
   (users (append
            (list (user-account
                    (name "teto")
@@ -53,17 +49,13 @@
                    (supplementary-groups '("wheel" "audio" "video" "network"))
                    (home-directory "/home/teto")
                    (shell (file-append bash "/bin/bash"))))
-           %base-user-accounts))   ; root などデフォルトユーザーを追加
+           %base-user-accounts))
 
-  ;; パッケージ
   (packages (append (list guile-3.0 emacs emacs-exwm git)
                     %base-packages))
 
-  ;; サービス
   (services (append
               (list
-                ;; Xorg
                 (service xorg-server-service-type)
-                ;; Network
                 (service network-manager-service-type))
               %base-services)))
