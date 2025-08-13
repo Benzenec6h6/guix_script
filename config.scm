@@ -38,13 +38,19 @@
   ;; グループ設定（文字列リスト）
   (groups '("root" "wheel" "audio" "video" "network" "users"))
 
-  ;; ユーザー
-  (users (list (user-account
-                (name "yourusername")
-                (group "users")
-                (supplementary-groups '("wheel" "audio" "video" "network"))
-                (home-directory "/home/yourusername")
-                (shell (file-append bash "/bin/bash")))))
+  ;; root アカウント
+  (users (cons (user-account
+               (name "root")
+               (group "root")
+               (home-directory "/root")
+               (shell (file-append bash "/bin/bash")))
+               ;; 他のユーザー
+               (list (user-account
+                     (name "yourusername")
+                     (group "users")
+                     (supplementary-groups '("wheel" "audio" "video" "network"))
+                     (home-directory "/home/yourusername")
+                     (shell (file-append bash "/bin/bash"))))))
 
   ;; パッケージ
   (packages (append (list guile-3.0 emacs emacs-exwm git)
