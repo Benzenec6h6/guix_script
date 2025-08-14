@@ -54,5 +54,5 @@
 
     ;; パッケージ（共通）
     (packages (append
-               (list guile-3.0 emacs emacs-exwm git)
+               (list emacs emacs-exwm git)
                %base-packages))))
