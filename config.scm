@@ -6,7 +6,6 @@
              (gnu packages bash)
              (gnu packages fonts)
              (gnu packages fcitx)
-             (gnu packages mozc)
              (gnu packages guile)
              (gnu packages version-control))
 
