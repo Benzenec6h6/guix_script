@@ -1,23 +1,21 @@
-(use-modules (srfi srfi-1) ; append用
-             (gnu packages emacs)       ; emacs, emacs-exwm, emacs-magit 用
-             (gnu packages emacs-xyz))  ; emacs 関連の拡張パッケージ
-             
+(use-modules (srfi srfi-1)
+             (gnu packages emacs)
+             (gnu packages emacs-xyz)
+             (gnu services xorg)
+             (gnu services desktop)
+             (gnu services fcitx5))
+
 (load "./config.scm")
 
-;; ネットワークタイプは環境変数 NETWORK に  "wired" か "wireless" を指定
 (define network
   (or (getenv "NETWORK") "wired"))
-
-;; wired または wireless を読み込む
 (load (string-append "./" network ".scm"))
 
-;; EXWM 専用パッケージとサービス
 (define emacs-exwm-init
   "
 (require 'exwm)
 (require 'exwm-config)
 (exwm-config-default)
-;; 日本語入力
 (setq default-input-method \"japanese-anthy\")
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -27,22 +25,37 @@
 (define %exwm-os
   (operating-system
     (inherit %common-os)
-    ;; パッケージ追加
+    ;; パッケージ
     (packages (append
                (list emacs emacs-exwm emacs-magit)
                (operating-system-packages %common-os)))
-    ;; サービス追加
-    (services (append
-               (list
-                (simple-service 'start-exwm shepherd-root-service-type
+    ;; サービス
+    (services
+     (append
+      (list
+       ;; Xorg サーバーとセッション設定
+       (service xorg-server-service-type
+                (xorg-configuration
+                 (keyboard-layout (keyboard-layout "jp" "jp106"))
+                 (server-arguments '("-nolisten" "tcp"))))
+       ;; EXWM セッション
+       (service slim-service-type
+                (slim-configuration
+                 (xorg-configuration
+                  (keyboard-layout (keyboard-layout "jp" "jp106")))
+                 (session-list
                   (list
-                   (shepherd-service
-                    (provision '(exwm))
-                    (requirement '(xorg-server fcitx5))
-                    (start #~(make-forkexec-constructor
-                              (list #$(file-append emacs "/bin/emacs") "--eval"
-                                    #$(string-append "(progn " emacs-exwm-init ")"))))
-                    (stop #~(make-kill-destructor))))))
-               (operating-system-services %common-os)))))
+                   (xorg-session
+                    (name "exwm")
+                    (start
+                     (xorg-start-command
+                      (string-append
+                       "exec "
+                       #$(file-append emacs "/bin/emacs")
+                       " --eval '" #$emacs-exwm-init "'"))))))))
+       ;; 日本語入力 fcitx5
+       (service fcitx5-service-type))
+      (operating-system-services %common-os)))))
+
 
 %exwm-os
