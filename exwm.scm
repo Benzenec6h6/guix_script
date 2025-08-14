@@ -1,4 +1,4 @@
-;; exwm.scm - EXWM デスクトップ環境構成
+;; exwm.scm - EXWM デスクトップ環境
 (use-modules (gnu)
              (gnu system)
              (gnu services shepherd)
@@ -6,16 +6,16 @@
              (gnu packages emacs-xyz)
              (srfi srfi-1)) ; append 用
 
-;; 共通設定を読み込む
-(load "./config.scm")  ; %common-os を定義済み
+;; ネットワークタイプに応じて %wired-os または %wireless-os を load する
+(load "./wired.scm")   ;; wired を例とする
+;; (load "./wireless.scm") ;; 無線ならこちらに切り替え
 
-;; Emacs EXWM 初期設定
 (define emacs-exwm-init
   "
 (require 'exwm)
 (require 'exwm-config)
 (exwm-config-default)
-;; メニューバー・ツールバー・スクロールバー非表示
+(setq default-input-method \"japanese-anthy\")
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -23,14 +23,10 @@
 
 (define %exwm-os
   (operating-system
-    (inherit %common-os)
-
-    ;; パッケージ追加（EXWM、Emacs）
+    (inherit %wired-os) ;; 有線なら %wired-os、無線なら %wireless-os
     (packages (append
                (list emacs emacs-exwm)
-               (operating-system-packages %common-os)))
-
-    ;; Shepherd サービス: EXWM 自動起動
+               (operating-system-packages %wired-os))) ; パッケージ継承
     (services (append
                (list
                 (simple-service 'start-exwm shepherd-root-service-type
@@ -40,9 +36,6 @@
                     (requirement '(xorg-server fcitx5))
                     (start #~(make-forkexec-constructor
                               (list #$(file-append emacs "/bin/emacs") "--eval"
-                                    #$(string-append
-                                       "(progn "
-                                       emacs-exwm-init
-                                       ")"))))
+                                    #$(string-append "(progn " emacs-exwm-init ")"))))
                     (stop #~(make-kill-destructor))))))
-               (operating-system-services %common-os)))))
+               (operating-system-services %wired-os)))))
