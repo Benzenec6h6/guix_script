@@ -1,20 +1,20 @@
-;; exwm.scm - EXWM デスクトップ環境
-(use-modules (gnu)
-             (gnu system)
-             (gnu services shepherd)
-             (gnu packages emacs)
-             (gnu packages emacs-xyz)
-             (srfi srfi-1)) ; append 用
+(use-modules (srfi srfi-1)) ; append用
+(load "./config.scm")
 
-;; ネットワークタイプに応じて %wired-os または %wireless-os を load する
-(load "./wired.scm")   ;; wired を例とする
-;; (load "./wireless.scm") ;; 無線ならこちらに切り替え
+;; ネットワークタイプは環境変数 NETWORK に  "wired" か "wireless" を指定
+(define network
+  (or (getenv "NETWORK") "wired"))
 
+;; wired または wireless を読み込む
+(load (string-append "./" network ".scm"))
+
+;; EXWM 専用パッケージとサービス
 (define emacs-exwm-init
   "
 (require 'exwm)
 (require 'exwm-config)
 (exwm-config-default)
+;; 日本語入力
 (setq default-input-method \"japanese-anthy\")
 (menu-bar-mode -1)
 (tool-bar-mode -1)
@@ -23,10 +23,12 @@
 
 (define %exwm-os
   (operating-system
-    (inherit %wired-os) ;; 有線なら %wired-os、無線なら %wireless-os
+    (inherit %common-os)
+    ;; パッケージ追加
     (packages (append
                (list emacs emacs-exwm)
-               (operating-system-packages %wired-os))) ; パッケージ継承
+               (operating-system-packages %common-os)))
+    ;; サービス追加
     (services (append
                (list
                 (simple-service 'start-exwm shepherd-root-service-type
@@ -38,4 +40,6 @@
                               (list #$(file-append emacs "/bin/emacs") "--eval"
                                     #$(string-append "(progn " emacs-exwm-init ")"))))
                     (stop #~(make-kill-destructor))))))
-               (operating-system-services %wired-os)))))
+               (operating-system-services %common-os)))))
+
+%exwm-os

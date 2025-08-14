@@ -1,4 +1,4 @@
-;; config.scm - 共通設定（OS、ユーザー、共通パッケージ、X11、fcitx5）
+;; 共通設定（OS、ユーザー、共通パッケージ、X11、fcitx5）
 (use-modules (gnu)
              (gnu system)
              (gnu system shadow)
@@ -17,7 +17,7 @@
     (timezone "Asia/Tokyo")
     (locale "ja_JP.UTF-8")
 
-    ;; キーボード
+    ;; キーボード設定
     (keyboard-layout (keyboard-layout "jp" "jp106"))
 
     ;; ブートローダー
@@ -37,13 +37,13 @@
             (mount-point "/")
             (type "ext4"))))
 
-    ;; グループ
+    ;; グループ設定
     (groups (append
              (list (user-group (name "teto"))
                    (user-group (name "network")))
              %base-groups))
 
-    ;; ユーザー
+    ;; ユーザー設定
     (users (append
             (list (user-account
                    (name "teto")
@@ -53,14 +53,14 @@
                    (shell (file-append bash "/bin/bash"))))
             %base-user-accounts))
 
-    ;; 共通パッケージ
+    ;; 共通パッケージ（X11、fcitx5）
     (packages (append
                (list xorg-server xterm
                      fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool
                      font-google-noto-serif-cjk font-google-noto-sans-cjk)
                %base-packages))
 
-    ;; サービス（X11 + fcitx5）
+    ;; サービス（X11 と fcitx5）
     (services (append
                (list (service xorg-server-service-type)
                      (service fcitx5-service-type))

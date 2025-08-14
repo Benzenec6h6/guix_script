@@ -1,6 +1,5 @@
-;; wired.scm - 有線ネットワーク
 (use-modules (gnu services networking))
-(load "config.scm") ;; %common-os を継承
+(load "./config.scm")
 
 (define %wired-os
   (operating-system
@@ -8,3 +7,5 @@
     (services (append
                (list (service dhcp-client-service-type))
                %base-services))))
+
+%wired-os
