@@ -3,7 +3,11 @@
              (gnu system)
              (gnu system shadow)
              (gnu services xorg)
+             (gnu services desktop)
              (gnu packages bash)
+             (gnu packages fonts)
+             (gnu packages fcitx)
+             (gnu packages mozc)
              (gnu packages guile)
              (gnu packages emacs)
              (gnu packages emacs-xyz)
@@ -54,5 +58,13 @@
 
     ;; パッケージ（共通）
     (packages (append
-               (list emacs emacs-exwm git)
-               %base-packages))))
+               (list emacs emacs-exwm git noto-fonts-cjk fonts-ipafont fcitx5 fcitx5-mozc)
+               %base-packages))
+
+    ;; サービス（X11 と日本語入力）
+    (services
+     (append
+      (list
+       (service xorg-server-service-type)
+       (service fcitx5-service-type))
+      %base-services))))
