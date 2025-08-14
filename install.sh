@@ -2,6 +2,7 @@
 set -euxo pipefail
 
 MOUNTPOINT="/mnt"
+MAINCONF="./config.scm"
 
 # --- ディスク選択 ---
 mapfile -t disks < <(lsblk -ndo NAME,SIZE,TYPE | awk '$3=="disk" && $1!~/^loop/ {print $1, $2}')
@@ -49,8 +50,8 @@ mount ${DISK}1 "$MOUNTPOINT/boot/efi"
 # --- config.scm のプレースホルダー置換 ---
 DEVICE_EFI="${DISK}1"
 DEVICE_ROOT="${DISK}2"
-sed -i "s|DEVICE_ROOT|$DEVICE_ROOT|g" "$CONFIG"
-sed -i "s|DEVICE_EFI|$DEVICE_EFI|g" "$CONFIG"
+sed -i "s|DEVICE_ROOT|$DEVICE_ROOT|g" "$MAINCONF"
+sed -i "s|DEVICE_EFI|$DEVICE_EFI|g" "$MAINCONF"
 
 # --- インストール実行 ---
 guix system init "$CONFIG" "$MOUNTPOINT"
