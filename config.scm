@@ -6,7 +6,7 @@
              (gnu packages xorg)
              (gnu packages bash)
              (gnu packages fonts)
-             (gnu packages fcitx)
+             (gnu packages fcitx5)
              (gnu packages guile)
              (gnu packages version-control))
 
@@ -55,7 +55,7 @@
 
     ;; 共通パッケージ（X11、fcitx5、Mozc）
     (packages (append
-               (list xorg xterm fcitx5 fcitx5-mozc
+               (list xorg-server xterm fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool
                      noto-fonts-cjk fonts-ipafont)
                %base-packages))
 
