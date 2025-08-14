@@ -56,7 +56,7 @@
     ;; 共通パッケージ（X11、fcitx5、Mozc）
     (packages (append
                (list xorg-server xterm fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool
-                     noto-fonts-cjk fonts-ipafont)
+                     font-google-noto-serif-cjk font-google-noto-sans-cjk)
                %base-packages))
 
     ;; サービス（X11 と fcitx5）
