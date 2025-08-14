@@ -1,4 +1,7 @@
-(use-modules (srfi srfi-1)) ; append用
+(use-modules (srfi srfi-1) ; append用
+             (gnu packages emacs)       ; emacs, emacs-exwm, emacs-magit 用
+             (gnu packages emacs-xyz))  ; emacs 関連の拡張パッケージ
+             
 (load "./config.scm")
 
 ;; ネットワークタイプは環境変数 NETWORK に  "wired" か "wireless" を指定
@@ -26,7 +29,7 @@
     (inherit %common-os)
     ;; パッケージ追加
     (packages (append
-               (list emacs emacs-exwm)
+               (list emacs emacs-exwm emacs-magit)
                (operating-system-packages %common-os)))
     ;; サービス追加
     (services (append
