@@ -6,12 +6,12 @@
 
 (load "./config.scm")
 
-;; ネットワークタイプは環境変数 NETWORK に "wired" または "wireless"
+;; ネットワークタイプは環境変数 NETWORK に "wired" か "wireless" を指定
 (define network
   (or (getenv "NETWORK") "wired"))
 (load (string-append "./" network ".scm"))
 
-;; EXWM/Emacs 初期化スクリプト
+;; EXWM / Emacs 初期化設定
 (define emacs-exwm-init
   "
 (require 'exwm)
@@ -28,30 +28,31 @@
   (operating-system
     (inherit %common-os)
 
-    ;; パッケージ追加
+    ;; 追加パッケージ
     (packages (append
                (list emacs emacs-exwm emacs-magit)
                (operating-system-packages %common-os)))
 
-    ;; サービス追加
-    (services (append
-               (list
-                 ;; SLiMサービス（ログインマネージャ）
-                 (service slim-service-type
-                          (slim-configuration
-                           (xorg-configuration
-                            (keyboard-layout (keyboard-layout "jp" "jp106")))))
+    ;; サービス
+    (services
+     (append
+      (list
+       ;; SLiM ログインマネージャ
+       (service slim-service-type
+                (slim-configuration
+                 (xorg-configuration
+                  (keyboard-layout (keyboard-layout "jp" "jp106")))))
 
-                 ;; EXWM/Emacs サービス
-                 (simple-service 'exwm
-                                 xorg-server-service-type
-                                 #:start #~(make-forkexec-constructor
-                                           (list #$(file-append emacs "/bin/emacs")
-                                                 "--eval"
-                                                 #$emacs-exwm-init)))
+       ;; EXWM / Emacs サービス
+       (simple-service 'exwm
+                       xorg-server-service-type
+                       (start #~(list #$(file-append emacs "/bin/emacs")
+                                      "--eval"
+                                      #$emacs-exwm-init)))
 
-                 ;; 日本語入力 fcitx5
-                 (service fcitx5-service-type))
-               (operating-system-services %common-os)))))
+       ;; fcitx5 日本語入力
+       (service fcitx5-service-type))
+      ;; 共通サービスを継承
+      (operating-system-services %common-os)))))
 
 %exwm-os
