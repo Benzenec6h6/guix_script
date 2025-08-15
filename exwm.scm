@@ -29,25 +29,26 @@
                (list emacs emacs-exwm emacs-magit)
                (operating-system-packages %common-os)))
     ;; サービス
-(services
- (append
-  (list
-   ;; SLiMサービス（ログインマネージャ）
-   (service slim-service-type
-            (slim-configuration
-             (xorg-configuration
-              (keyboard-layout (keyboard-layout "jp" "jp106")))))
+    (services
+     (append
+      (list
+       ;; SLiMサービス（ログインマネージャ）
+       (service slim-service-type
+                (slim-configuration
+                 (xorg-configuration
+                  (keyboard-layout (keyboard-layout "jp" "jp106")))))
 
-   ;; EXWM/Emacs サービス
-   (simple-service 'exwm
-                   xorg-server-service-type
-                   (start #~(make-forkexec-constructor
-                             (list #$(file-append emacs "/bin/emacs")
-                                   "--eval"
-                                   #$emacs-exwm-init))))
+       ;; EXWM/Emacs サービス
+       (simple-service 'exwm
+                       xorg-server-service-type
+                       (start #~(make-forkexec-constructor
+                                 (list #$(file-append emacs "/bin/emacs")
+                                       "--eval"
+                                       #$emacs-exwm-init))))
 
-   (service fcitx5-service-type))
-  (operating-system-services %common-os)))
-
+       ;; 日本語入力 fcitx5 サービス
+       (service fcitx5-service-type))
+      ;; 共通サービスを追加
+      (operating-system-services %common-os)))))
 
 %exwm-os
