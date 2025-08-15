@@ -3,6 +3,7 @@
              (gnu system)
              (gnu system shadow)
              (gnu services xorg)
+             (gnu services desktop)
              (gnu packages xorg)
              (gnu packages bash)
              (gnu packages fonts)
