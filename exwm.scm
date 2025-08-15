@@ -44,10 +44,10 @@
                    (start #~(make-forkexec-constructor
                              (list #$(file-append emacs "/bin/emacs")
                                    "--eval"
-                                   #$emacs-exwm-init)))))
-      
-       ;; 日本語入力 fcitx5
-       (service fcitx5-service-type))
-      (operating-system-services %common-os))))
+                                   #$emacs-exwm-init))))
+
+   (service fcitx5-service-type))
+  (operating-system-services %common-os)))
+
 
 %exwm-os
