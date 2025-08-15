@@ -32,23 +32,22 @@
 (services
  (append
   (list
+   ;; SLiMサービス（ログインマネージャ）
    (service slim-service-type
             (slim-configuration
              (xorg-configuration
-              (xorg-configuration
-               (keyboard-layout (keyboard-layout "jp" "jp106"))))))
-   (simple-service 'exwm-xsession
-                   xsession-service-type
-                   (xsession
-                    (name "exwm")
-                    (start
-                     #~(system* #$(file-append emacs "/bin/emacs")
-                                "--eval"
-                                #$emacs-exwm-init))))
+              (keyboard-layout (keyboard-layout "jp" "jp106")))))
+
+   ;; EXWM/Emacs サービス
+   (simple-service 'exwm
+                   xorg-server-service-type
+                   (start #~(make-forkexec-constructor
+                             (list #$(file-append emacs "/bin/emacs")
+                                   "--eval"
+                                   #$emacs-exwm-init)))))
       
        ;; 日本語入力 fcitx5
        (service fcitx5-service-type))
-      (operating-system-services %common-os)))))
-
+      (operating-system-services %common-os))))
 
 %exwm-os
