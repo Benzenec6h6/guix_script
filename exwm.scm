@@ -49,14 +49,18 @@
                  (xorg-configuration
                   (keyboard-layout (keyboard-layout "jp" "jp106")))))
 
-       ;; EXWM / Emacs を simple-service でユーザー空間起動
-       (simple-service 'exwm
-                       (start #~(make-forkexec-constructor
-                                 (list #$(file-append emacs "/bin/emacs")
-                                       "--eval" #$emacs-exwm-init)))
-                       (stop #~(make-kill-destructor)))
+       ;; EXWM / Emacs を Shepherd サービスとして起動
+       (service shepherd-root-service-type
+                (list
+                 (shepherd-service
+                  (provision '(exwm))
+                  (requirement '(xorg-server))
+                  (start #~(make-forkexec-constructor
+                            (list #$(file-append emacs "/bin/emacs")
+                                  "--eval" #$emacs-exwm-init)))
+                  (stop #~(make-kill-destructor)))))
 
-       ;; fcitx5 日本語入力 (xorg と同じユーザー空間サービス)
+       ;; fcitx5 日本語入力サービス
        (service fcitx5-service-type))
 
       ;; 共通サービスを継承
