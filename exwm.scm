@@ -1,18 +1,21 @@
 (use-modules (srfi srfi-1)
              (gnu packages emacs)
              (gnu packages emacs-xyz)
+             (gnu packages fcitx5)
+             (gnu packages xorg)
              (gnu services xorg)
              (gnu services desktop)
-             (gnu services shepherd))
+             (gnu services shepherd)
+             (shepherd service))
 
 (load "./config.scm")
 
-;; ネットワーク設定を選択 (wired.scm / wireless.scm)
+;; ネットワーク設定 (wired / wireless)
 (define network
   (or (getenv "NETWORK") "wired"))
 (load (string-append "./" network ".scm"))
 
-;; Emacs/EXWM 初期化コード
+;; Emacs/EXWM 初期化
 (define emacs-exwm-init
   "
 (require 'exwm)
@@ -31,7 +34,9 @@
     ;; パッケージ
     (packages
      (append
-      (list emacs emacs-exwm emacs-magit)
+      (list emacs emacs-exwm emacs-magit
+            fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool
+            xorg-server xterm)
       (operating-system-packages %common-os)))
 
     ;; サービス
@@ -53,13 +58,9 @@
                   (start #~(make-forkexec-constructor
                             (list #$(file-append emacs "/bin/emacs")
                                   "--eval" #$emacs-exwm-init)))
-                  (stop #~(make-kill-destructor)))))
-
-       ;; fcitx5 日本語入力
-       (service fcitx5-service-type))
+                  (stop #~(make-kill-destructor))))))
 
       ;; 共通サービスを継承
       (operating-system-services %common-os)))))
-
-
+      
 %exwm-os
