@@ -2,9 +2,6 @@
              (gnu packages emacs)
              (gnu packages emacs-xyz)
              (gnu packages fcitx5)
-             (gnu packages xorg)
-             (gnu services xorg)
-             (gnu services desktop)
              (gnu services shepherd)
              (shepherd service))
 
@@ -31,25 +28,17 @@
   (operating-system
     (inherit %common-os)
 
-    ;; パッケージ
+    ;; EXWM/Emacs + fcitx5 パッケージ
     (packages
      (append
       (list emacs emacs-exwm emacs-magit
-            fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool
-            xorg-server xterm)
+            fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool)
       (operating-system-packages %common-os)))
 
-    ;; サービス
+    ;; EXWM 専用サービス
     (services
      (append
       (list
-       ;; SLiM ログインマネージャ
-       (service slim-service-type
-                (slim-configuration
-                 (xorg-configuration
-                  (keyboard-layout (keyboard-layout "jp" "jp106")))))
-
-       ;; EXWM / Emacs サービス (Shepherd 管理)
        (service shepherd-root-service-type
                 (list
                  (shepherd-service
@@ -59,8 +48,7 @@
                             (list #$(file-append emacs "/bin/emacs")
                                   "--eval" #$emacs-exwm-init)))
                   (stop #~(make-kill-destructor))))))
-
       ;; 共通サービスを継承
       (operating-system-services %common-os)))))
-      
+
 %exwm-os
