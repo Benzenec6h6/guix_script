@@ -1,13 +1,9 @@
-;; 共通設定（OS、ユーザー、共通パッケージ、X11、fcitx5）
+;; 共通設定（OS、ユーザー、共通パッケージ）
 (use-modules (gnu)
              (gnu system)
              (gnu system shadow)
-             (gnu services xorg)
-             (gnu services desktop)
-             (gnu packages xorg)
              (gnu packages bash)
              (gnu packages fonts)
-             (gnu packages fcitx5)
              (gnu packages guile)
              (gnu packages version-control))
 
@@ -17,15 +13,6 @@
     (host-name "guix-box")
     (timezone "Asia/Tokyo")
     (locale "ja_JP.UTF-8")
-
-    ;; キーボード設定
-    (keyboard-layout (keyboard-layout "jp" "jp106"))
-
-    ;; ブートローダー
-    (bootloader
-     (bootloader-configuration
-      (bootloader grub-efi-bootloader)
-      (targets '("/boot/efi"))))
 
     ;; ファイルシステム
     (file-systems
@@ -54,15 +41,12 @@
                    (shell (file-append bash "/bin/bash"))))
             %base-user-accounts))
 
-    ;; 共通パッケージ（X11、fcitx5）
+    ;; 共通パッケージ
     (packages (append
-               (list xorg-server xterm
-                     fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool
-                     font-google-noto-serif-cjk font-google-noto-sans-cjk)
+               (list
+                 font-google-noto-serif-cjk
+                 font-google-noto-sans-cjk)
                %base-packages))
 
-    ;; サービス（X11 と fcitx5）
-    (services (append
-               (list (service xorg-server-service-type)
-                     (service fcitx5-service-type))
-               %base-services))))
+    ;; 共通サービス
+    (services %base-services)))
