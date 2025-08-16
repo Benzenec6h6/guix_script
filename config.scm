@@ -1,10 +1,7 @@
-;; 共通設定（OS、ユーザー、共通パッケージ、X11）
+;; 共通設定（OS、ユーザー、共通パッケージ）
 (use-modules (gnu)
              (gnu system)
              (gnu system shadow)
-             (gnu services xorg)
-             (gnu services desktop)
-             (gnu packages xorg)
              (gnu packages bash)
              (gnu packages fonts)
              (gnu packages guile)
@@ -17,15 +14,6 @@
     (timezone "Asia/Tokyo")
     (locale "ja_JP.UTF-8")
 
-    ;; キーボード設定
-    (keyboard-layout (keyboard-layout "jp" "jp106"))
-
-    ;; ブートローダー
-    (bootloader
-     (bootloader-configuration
-      (bootloader grub-efi-bootloader)
-      (targets '("/boot/efi"))))
-
     ;; ファイルシステム
     (file-systems
      (list (file-system
@@ -36,6 +24,12 @@
             (device "DEVICE_ROOT")
             (mount-point "/")
             (type "ext4"))))
+
+    ;; ブートローダー
+    (bootloader
+     (bootloader-configuration
+      (bootloader grub-efi-bootloader)
+      (targets '("/boot/efi"))))
 
     ;; グループ設定
     (groups (append
@@ -53,13 +47,11 @@
                    (shell (file-append bash "/bin/bash"))))
             %base-user-accounts))
 
-    ;; 共通パッケージ（X11）
+    ;; 共通パッケージ（OS基盤）
     (packages (append
-               (list xorg-server xterm
-                     font-google-noto-serif-cjk font-google-noto-sans-cjk)
+               (list font-google-noto-serif-cjk
+                     font-google-noto-sans-cjk)
                %base-packages))
 
-    ;; 共通サービス（X11）
-    (services (append
-               (list (service xorg-server-service-type))
-               %base-services))))
+    ;; 共通サービス（OS基盤）
+    (services %base-services)))
