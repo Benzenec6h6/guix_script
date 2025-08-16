@@ -1,12 +1,11 @@
 (use-modules (gnu services networking))
 
-;; 共通 OS 設定をロード
+;; 共通設定を読み込む
 (load "./config.scm")
 
 (define %wired-os
   (operating-system
-    (inherit %common-os)
+    (inherit %exwm-os) ;; exwm.os を継承している場合
     (services (append
-               (list
-                (service network-manager-service-type))
-               (operating-system-services %common-os)))))
+               (list (service network-manager-service-type))
+               (operating-system-services %exwm-os)))))
