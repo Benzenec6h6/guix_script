@@ -1,35 +1,19 @@
-(use-modules (srfi srfi-1)
-             (gnu packages emacs)
-             (gnu packages emacs-xyz)
-             (gnu packages fcitx5)
-             (gnu packages xorg)
-             (gnu services xorg)
-             (gnu services desktop)
-             (gnu services shepherd)
-             (shepherd service))
-
-(load "./config.scm")
-
-;; ネットワーク設定 (wired / wireless)
-(define network
-  (or (getenv "NETWORK") "wired"))
-(load (string-append "./" network ".scm"))
-
-;; Emacs/EXWM 初期化
-(define emacs-exwm-init
-  "
-(require 'exwm)
-(require 'exwm-config)
-(exwm-config-default)
-(setq default-input-method \"japanese-anthy\")
-(menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-")
-
 (define %exwm-os
   (operating-system
-    (inherit %common-os)
+    ;; ホスト名・タイムゾーン・ロケール
+    (host-name "guix-box")
+    (timezone "Asia/Tokyo")
+    (locale "ja_JP.UTF-8")
+
+    ;; ファイルシステム
+    (file-systems %common-file-systems)
+
+    ;; ブートローダー
+    (bootloader %common-bootloader)
+
+    ;; グループ・ユーザー
+    (groups %common-groups)
+    (users %common-users)
 
     ;; パッケージ
     (packages
@@ -37,33 +21,30 @@
       (list emacs emacs-exwm emacs-magit
             fcitx5 fcitx5-anthy fcitx5-gtk fcitx5-qt fcitx5-configtool
             xorg-server xterm)
-      (operating-system-packages %common-os)))
+      %common-packages))
 
     ;; サービス
     (services
      (append
       (list
-       ;; SLiM ログインマネージャ
+       ;; SLiM
        (service slim-service-type
                 (slim-configuration
                  (xorg-configuration
                   (keyboard-layout (keyboard-layout "jp" "jp106")))))
 
-       ;; EXWM / Emacs を Shepherd サービスとして起動
-       (service shepherd-root-service-type
-                (list
-                 (shepherd-service
-                  (provision '(exwm))
-                  (requirement '(xorg-server))
-                  (start #~(make-forkexec-constructor
-                            (list #$(file-append emacs "/bin/emacs")
-                                  "--eval" #$emacs-exwm-init)))
-                  (stop #~(make-kill-destructor)))))
+       ;; EXWM / Emacs をユーザー空間で起動
+       (simple-service 'exwm
+         (start #~(make-forkexec-constructor
+                   (list #$(file-append emacs "/bin/emacs")
+                         "--eval" #$emacs-exwm-init)))
+         (stop #~(make-kill-destructor)))
 
-       ;; fcitx5 日本語入力サービス
-       (service fcitx5-service-type))
+       ;; 必要なら fcitx5 を EXWM 起動時に起動
+       (simple-service 'fcitx5
+         (start #~(make-forkexec-constructor
+                   (list "fcitx5")))
+         (stop #~(make-kill-destructor))))
 
-      ;; 共通サービスを継承
-      (operating-system-services %common-os)))))
-      
-%exwm-os
+      ;; 共通サービス
+      %common-services))))
